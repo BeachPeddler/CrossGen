@@ -2,7 +2,7 @@ import java.util.LinkedList;
 
 
 
-public class userBag {
+public class UserBag {
     public static void main(String[] args) {
         // Create a LinkedList array with some sample strings
         LinkedList<String> wordList = new LinkedList<>();
