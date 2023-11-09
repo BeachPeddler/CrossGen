@@ -1,31 +1,26 @@
-package org.example;
 import java.util.Arrays;
 
-public class UserBag<T> {
-    private T[] wordList;// Wordlist Array
-    public static final int initialCapacity=15;// Array size
-    private int size;
+public class UserBag implements BagInterface<PuzzleWord> {
+    public static int bagSize = 0;// Array size
     private int[] letterFrequency = new int[26];//Alphabet size
-
-    @SuppressWarnings("unchecked")
-//Delete me, just for ref
-    //for ref
+    public static PuzzleWord[] wordBag;
 
 
-    public UserBag(){// Initialize UserBag
-        wordList = (T[]) new Object[initialCapacity];
-        for (int i = 0; i < initialCapacity; i++) {
-            wordList[i] = null;} //each element initialized to null
-        size=initialCapacity;//size is equal to capacity
+    public UserBag(int bagCapacity){// Initialize UserBag
+       wordBag = new PuzzleWord[bagCapacity];
     }
 
-    public boolean add(T newWord){
+
+//Start here
+
+
+    public boolean add(PuzzleWord newWord){
         boolean addSuccess = false;
-        for (int i = 0; i < size; i++) {//iterate through array
-            if (wordList[i] == null) {//if null
-                wordList[i] = newWord;//add new word
+        for (int i = 0; i < bagSize; i++) {//iterate through array
+            if (wordBag[i] == null) {//if null
+                wordBag[i] = newWord;//add new word
                 addSuccess = true;
-                break;
+                return addSuccess;
             } //end if
         } //end for
         return addSuccess;
@@ -77,6 +72,71 @@ public class UserBag<T> {
     public boolean isEmpty(){
         return size==0;
 
+    }
+
+
+
+    /**
+     * Removes one unspecified entry from this bag, if possible.
+     *
+     * @return Either the removed entry, if the removal.
+     * was successful, or null.
+     */
+    @Override
+    public PuzzleWord remove() {
+        return null;
+    }
+
+    /**
+     * Removes one occurrence of a given entry from this bag, if possible.
+     *
+     * @param anEntry The entry to be removed.
+     * @return True if the removal was successful, or false if not.
+     */
+    @Override
+    public boolean remove(PuzzleWord anEntry) {
+        return false;
+    }
+
+    /**
+     * Removes all entries from this bag.
+     */
+    @Override
+    public void clear() {
+
+    }
+
+    /**
+     * Counts the number of times a given entry appears in this bag.
+     *
+     * @param anEntry The entry to be counted.
+     * @return The number of times anEntry appears in the bag.
+     */
+    @Override
+    public int getFrequencyOf(PuzzleWord anEntry) {
+        return 0;
+    }
+
+    /**
+     * Tests whether this bag contains a given entry.
+     *
+     * @param anEntry The entry to find.
+     * @return True if the bag contains anEntry, or false if not.
+     */
+    @Override
+    public boolean contains(PuzzleWord anEntry) {
+        return false;
+    }
+
+    /**
+     * Retrieves all entries that are in this bag.
+     *
+     * @return A newly allocated array of all the entries in the bag.
+     * Note: If the bag is empty, the returned array is empty.
+     */
+    @Override
+    public PuzzleWord[] toArray() {
+        return new PuzzleWord[0];
     }
 
     public T get(int index){

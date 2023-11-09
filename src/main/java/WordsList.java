@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
-public class WordsList {
+public class WordsList implements ListInterface<T>{
 
 
     List<PuzzleWord>  = new ArrayList<>();
