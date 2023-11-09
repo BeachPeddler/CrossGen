@@ -30,7 +30,7 @@ public class CrossGenMain {
             }
         }
 
-        UserBag wordBag = new UserBag<T>();
+        UserBag wordBag = new UserBag();
 
 
         //Receiving User Inputs
@@ -44,7 +44,7 @@ public class CrossGenMain {
             wordHint = input.nextLine();
 
             PuzzleWord addWord = new PuzzleWord(newWord, wordHint);
-            WordBag.add(addWord);
+            UserBag.add(addWord);
         }
         System.out.println("Please wait while we make your new crossword puzzle.");
 
