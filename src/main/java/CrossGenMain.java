@@ -3,7 +3,7 @@ import java.util.Scanner;
 //Receives input from users. Follows Factory Pattern method.
 public class CrossGenMain {
     static int wordCount = 0;
-    static final int MAX_WORD_COUNT = 10;
+    private static final int MAX_WORD_COUNT = 10;
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -30,7 +30,7 @@ public class CrossGenMain {
             }
         }
 
-        UserBag wordBag = new UserBag();
+        UserBag wordBag = new UserBag(wordCount);
 
 
         //Receiving User Inputs
