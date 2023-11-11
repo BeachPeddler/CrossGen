@@ -44,4 +44,9 @@ public interface BagInterface<T>
      Note: If the bag is empty, the returned array is empty. */
     public T[] toArray();
 
+    public String getWord(T anEntry);
+
+    public int[] countLetterFrequencies();
+
+    public void printWordScores();
 }

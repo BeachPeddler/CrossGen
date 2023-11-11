@@ -13,7 +13,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
 
 //Start here
 
-
+    @Override
     public boolean add(PuzzleWord newWord){
         boolean addSuccess = false;
         for (int i = 0; i < bagSize; i++) {//iterate through array
@@ -27,169 +27,163 @@ public class UserBag implements BagInterface<PuzzleWord> {
     } //end add
 
     //return current size
+
+    @Override
     public int getCurrentSize() {
         int currentSize= 0;
 
-        for(int i=0; i<size; i++){
-            if(wordList[i] !=null){
+        for(int i=0; i<bagSize; i++){
+            if(wordBag[i] !=null){
                 currentSize++;
             }//end if
         }//end for
         return currentSize;
     }//end getCurrentSize
 
-    public boolean remove(T wordToRemove) {//Remove word
+
+    //remove
+    @Override
+    public boolean remove(PuzzleWord anEntry) {//Remove word
         boolean removed = false; // Flag to track if the word was removed
         int shiftCount = 0; // Counter for shifting elements
 
-        for (int i = 0; i < size; i++) {
-            if (wordList[i] != null && wordList[i].equals(wordToRemove)) {
+        for (int i = 0; i < bagSize; i++) {
+            if (wordBag[i] != null && wordBag[i].equals(anEntry)) {
                 removed = true; // Word found and removed
                 shiftCount++;
-            } else if (shiftCount > 0) {
-                wordList[i - shiftCount] = wordList[i];
-            }
-        }
+            } //end if
+            else if (shiftCount > 0) {
+                wordBag[i - shiftCount] = wordBag[i];
+            }//end else if
+        }//end for
 
         if (removed) {
-            for (int i = size - shiftCount; i < size; i++) {
-                wordList[i] = null; // Set the last elements to null
-            }
-            size -= shiftCount; // Update the size
-        }
+            for (int i = bagSize - shiftCount; i < bagSize; i++) {
+                wordBag[i] = null; // Set the last elements to null
+            }//end for
+            bagSize -= shiftCount; // Update the size
+        }//end if
 
         return removed;
 
-    }
+    }//end Remove
+
+
     //clear
-    public void clear(UserBag<String> wordBag) {
-        for (int i = 0; i < size; i++) {
-            wordList[i] = null;
-        } //end for
-        size=initialCapacity;
-
-    } //end clear
-    public boolean isEmpty(){
-        return size==0;
-
-    }
-
-
-
-    /**
-     * Removes one unspecified entry from this bag, if possible.
-     *
-     * @return Either the removed entry, if the removal.
-     * was successful, or null.
-     */
-    @Override
-    public PuzzleWord remove() {
-        return null;
-    }
-
-    /**
-     * Removes one occurrence of a given entry from this bag, if possible.
-     *
-     * @param anEntry The entry to be removed.
-     * @return True if the removal was successful, or false if not.
-     */
-    @Override
-    public boolean remove(PuzzleWord anEntry) {
-        return false;
-    }
-
-    /**
-     * Removes all entries from this bag.
-     */
     @Override
     public void clear() {
+        for (int i = 0; i < bagSize; i++) {
+            wordBag[i] = null;
+        } //end for
+    } //end clear
 
-    }
+    //isEmpty
+    @Override
+    public boolean isEmpty(){
+        return getCurrentSize()==0;//Returns True if getCurrentSize=0
 
-    /**
-     * Counts the number of times a given entry appears in this bag.
-     *
-     * @param anEntry The entry to be counted.
-     * @return The number of times anEntry appears in the bag.
-     */
+    }// end isEmpty
+
+
+    @Override
+    public PuzzleWord remove() {
+        if(this.isEmpty()){// check if bag is empty
+            return null;
+        }//end if
+        else {
+            int i=0;
+            PuzzleWord result = wordBag[i];
+            while(result ==null){
+                i++;
+                result = wordBag[i];
+            }//end while
+            this.remove(result);//call the remove method to remove result
+            return result;//return the removed element
+        }//end else
+    }// end remove
+
+
     @Override
     public int getFrequencyOf(PuzzleWord anEntry) {
-        return 0;
-    }
+        int freq= 0;// inialize freq to 0
+        for(int i=0; i< bagSize; i++){
+            if(wordBag.equals(anEntry)){
+                freq++;
+            }// end if
+        }//end for
+        return freq;
+    }// end getFrequencyOF
 
-    /**
-     * Tests whether this bag contains a given entry.
-     *
-     * @param anEntry The entry to find.
-     * @return True if the bag contains anEntry, or false if not.
-     */
+
     @Override
     public boolean contains(PuzzleWord anEntry) {
+        for(int i=0; i<bagSize; i++){
+            if(wordBag[i] !=null && wordBag[i].equals(anEntry)){// Null check prevents NullPointerException
+                return true;
+            }// end if
+        }// end for
         return false;
-    }
+    }// end contains
 
-    /**
-     * Retrieves all entries that are in this bag.
-     *
-     * @return A newly allocated array of all the entries in the bag.
-     * Note: If the bag is empty, the returned array is empty.
-     */
     @Override
     public PuzzleWord[] toArray() {
-        return new PuzzleWord[0];
+        PuzzleWord[] resultArray= new PuzzleWord[bagSize];
+        for (int i=0; i<bagSize; i++){
+            resultArray[i]= wordBag[i];
+        }// end for
+        return resultArray;
+    }// end toArray
+
+
+    @Override
+    public String getWord(PuzzleWord anEntry){
+
+        return anEntry.getWordString();
     }
 
-    public T get(int index){
-        if (index < 0 || index >=size){
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }// end if
-        return wordList[index];
-    }
-    @SuppressWarnings("unchecked")
-    public T[] getAllEntries() {
-        T[] entries = Arrays.copyOf(wordList, size);
-        return entries;
-    }
 
+    @Override
     public int[] countLetterFrequencies() {
 
-        for (int i = 0; i < size; i++) {
-            Object word = wordList[i];
-            if (word instanceof String) {
-                String str = (String) word;
-                for (int j = 0; j < str.length(); j++) {
-                    char c = str.charAt(j);
-                    if (c >= 'a' && c <= 'z') {
-                        letterFrequency[c - 'a']++;
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < 26; i++) {
-            char letter = (char) ('a' + i);
-            int frequency = letterFrequency[i];
+        for (int i = 0; i < bagSize; i++) {
+            PuzzleWord puzzleWord = wordBag[i];// iterate through each element
+            if (puzzleWord !=null) { //check if puzzleword is not null
+                String word= puzzleWord.getWordString();// get word from puzzleword
+                for (int j = 0; j < word.length(); j++) {//iterate through the word
+                    char c = Character.toLowerCase(word.charAt(j));
+                    if (c >= 'a' && c <= 'z') {//checks char
+                        letterFrequency[c - 'a']++; //update frequency counter
+                    }//end if
+                }// end for
+            }//end if
+        }//end for
+        for (int i = 0; i < 26; i++) {//iterates through letter
+            char letter = (char) ('a' + i);// calculate corresponding letter a=0 b=1 ...
+            int frequency = letterFrequency[i];//get frequency for corresponding letter
             System.out.println(letter + ": " + frequency);
-        }
+        }//end for
 
         return letterFrequency;
-    }
+    }// end countLetterFrequency
 
+
+    @Override
     public void printWordScores() {
-        for (int i = 0; i < size; i++) {
-            T word = wordList[i];
-            if (word instanceof String) {
-                String str = (String) word;
-                int score = 0;
+        for (int i = 0; i < bagSize; i++) {
+            PuzzleWord puzzleWord = wordBag[i];// iterate through each element
+            if (puzzleWord != null) {//null check
+                String word = puzzleWord.getWordString();//get word from puzzle word
+                int score = 0;// initialize score at 0
 
-                for (int j = 0; j < str.length(); j++) {
-                    char c = str.charAt(j);
-                    if (c >= 'a' && c <= 'z') {
-                        score += letterFrequency[c - 'a'];
-                    }
-                }
+                for (int j = 0; j < word.length(); j++) {//iterate through word
+                    char c = Character.toLowerCase(word.charAt(j));
+                    if (c >= 'a' && c <= 'z') {//check char
+                        score += letterFrequency[c - 'a'];// update score from letter frequency array
+                    }//end if
+                }//end for
 
-                System.out.println("Word: " + str + ", Score: " + score);
-            }
-        }
-    }
+                System.out.println("Word: " + word + ", Score: " + score);
+            }//end if
+        }//end for
+    }//end print word score
 }
