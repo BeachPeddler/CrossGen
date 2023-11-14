@@ -18,8 +18,11 @@ public class CrossGenMain {
         while (wordCount == 0)
         {
             userInput = input.nextLine();
-            int numWords = Integer.parseInt(userInput);
-            if (numWords <= MAX_WORD_COUNT)
+            while (!validateCount(userInput)) {
+                System.out.println("Enter a number 1-10.");
+                userInput = input.nextLine();
+            }
+            if (wordCount <= MAX_WORD_COUNT && wordCount > 0)
             {
                 System.out.println("You got it, your word count is now " + numWords + ".");
                 wordCount = numWords;
@@ -46,7 +49,7 @@ public class CrossGenMain {
             PuzzleWord addWord = new PuzzleWord(newWord, wordHint);
             UserBag.add(addWord);
         }
-        System.out.println("Please wait while we make your new crossword puzzle.");
+        System.out.println("Generating puzzle.");
 
         WordsList wordList = new WordsList<>();
         WordBag.sendToList(wordList);
@@ -54,7 +57,36 @@ public class CrossGenMain {
         //Constructs PuzzleWord() based on inputs
         //Constructs WordList()
         //Constructs a new CrossGenFactory
-        CrossGenFactory newCross = new CrossGenFactory<>();
-        newCross.generateCrossword(wordList);
+    }
+
+    private static String getString(int iterator) {
+        return switch (iterator) {
+            case 1 -> "second";
+            case 2 -> "third";
+            case 3 -> "fourth";
+            case 4 -> "fifth";
+            case 5 -> "sixth";
+            case 6 -> "seventh";
+            case 7 -> "eighth";
+            case 8 -> "ninth";
+            case 9 -> "tenth";
+            default -> "first";
+        };
+    }
+
+    public static boolean validateCount(String newNum) {
+        String clean = newNum.replaceAll("\\D+","");
+        return clean.equals(newNum);
+    }
+
+
+    public static boolean validateWord(String newWord) {
+        char[] chars = newWord.toCharArray();
+            for (char c : chars) {
+                if(!Character.isLetter(c)) {
+                    return false;
+                }
+            }
+            return true;
     }
 }
