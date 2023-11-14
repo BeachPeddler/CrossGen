@@ -19,8 +19,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
         for (int i = 0; i < bagSize; i++) {//iterate through array
             if (wordBag[i] == null) {//if null
                 wordBag[i] = newWord;//add new word
-                addSuccess = true;
-                return addSuccess;
+                return true;
             } //end if
         } //end for
         return addSuccess;

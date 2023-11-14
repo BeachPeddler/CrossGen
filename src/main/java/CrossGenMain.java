@@ -5,10 +5,11 @@ public class CrossGenMain {
     static int wordCount = 0;
     private static final int MAX_WORD_COUNT = 10;
 
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
-        String userInput = null;
+        String userInput;
         String newWord;
         String wordHint;
 
@@ -24,12 +25,11 @@ public class CrossGenMain {
             }
             if (wordCount <= MAX_WORD_COUNT && wordCount > 0)
             {
-                System.out.println("You got it, your word count is now " + numWords + ".");
-                wordCount = numWords;
+                System.out.println("Your word count is " + wordCount + ".");
             }
             else
             {
-                System.out.println("Hey, put in a number that matches this time.");
+                System.out.println("Enter a number 1-10.");
             }
         }
 
@@ -37,22 +37,23 @@ public class CrossGenMain {
 
 
         //Receiving User Inputs
-        System.out.println("Fantastic. Now we can make your words and hints!");
-        for(int i = 0; i < wordCount;i++)
+        for(int i = 0; i < wordCount; i++)
         {
-            System.out.println("Please enter a word.");
+            String xth = getString(i);
+            System.out.println("Enter your " + xth + " word.");
             newWord = input.nextLine();
-
-            System.out.println("What is that word's hint?");
+            while (!validateWord(newWord)){
+                System.out.println("Enter a valid word. Only letters are allowed.");
+                newWord = input.nextLine();
+                validateWord(newWord);
+            }
+            System.out.println("Enter the hint for your " + xth  +  " word.");
             wordHint = input.nextLine();
 
-            PuzzleWord addWord = new PuzzleWord(newWord, wordHint);
-            UserBag.add(addWord);
+            PuzzleWord addWord = new PuzzleWord(newWord.toUpperCase(), wordHint);
+            wordBag.add(addWord);
         }
         System.out.println("Generating puzzle.");
-
-        WordsList wordList = new WordsList<>();
-        WordBag.sendToList(wordList);
 
         //Constructs PuzzleWord() based on inputs
         //Constructs WordList()
