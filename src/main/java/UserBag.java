@@ -118,7 +118,21 @@ public class UserBag implements BagInterface<PuzzleWord> {
     }
 
 
-    public int[] countLetterFrequencies() {
+    public void orderContents() {
+        this.countLetterFrequencies();
+        this.calculateWordScores();
+        PuzzleWord temp;
+        for (int i = 0; i < (wordBag.length - 1); i++) {
+            for (int j = 1; j < wordBag.length; j++) {
+                if (wordBag[i].getWordScore() < wordBag[j].getWordScore()) {
+                    temp = wordBag[i];
+                    wordBag[i] = wordBag[j];
+                    wordBag[j] = temp;
+                }
+            }
+        }
+    }
+    public void countLetterFrequencies() {
 
         for (int i = 0; i < bagSize; i++) {
             PuzzleWord puzzleWord = wordBag[i];// iterate through each element
@@ -132,13 +146,6 @@ public class UserBag implements BagInterface<PuzzleWord> {
                 }// end for
             }//end if
         }//end for
-        for (int i = 0; i < 26; i++) {//iterates through letter
-            char letter = (char) ('a' + i);// calculate corresponding letter a=0 b=1 ...
-            int frequency = letterFrequency[i];//get frequency for corresponding letter
-            System.out.println(letter + ": " + frequency);
-        }//end for
-
-        return letterFrequency;
     }// end countLetterFrequency
 
 
