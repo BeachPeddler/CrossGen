@@ -2,7 +2,7 @@
 
 public class UserBag implements BagInterface<PuzzleWord> {
     public static int bagSize = 0;// Array size
-    private final int[] letterFrequency = new int[26];//Alphabet size
+    public final int[] letterFrequency = new int[26];//Alphabet size
     public static PuzzleWord[] wordBag;
 
 
@@ -11,17 +11,31 @@ public class UserBag implements BagInterface<PuzzleWord> {
     }
 
     //Adds PuzzleWord object to bag
+   // @Override
+   // public boolean add(PuzzleWord newWord){
+     //   for (int i = 0; i < bagSize; i++) {//iterate through array
+        //    if (wordBag[i] == null) {//if null
+           //     System.out.println("Adding " + newWord + " at index " + i);
+            //    wordBag[i] = newWord;//add new word
+            //    bagSize++;
+            //    return true;
+          //  } //end if
+       // } //end for
+    //    return false;
+  //  } //end add
+
+    //updated the add method, i was getting errors while testing and had to change it
+
+    //Adds PuzzleWord object to bag
     @Override
-    public boolean add(PuzzleWord newWord){
-        for (int i = 0; i < bagSize; i++) {//iterate through array
-            if (wordBag[i] == null) {//if null
-                wordBag[i] = newWord;//add new word
-                bagSize++;
-                return true;
-            } //end if
-        } //end for
-        return false;
-    } //end add
+    public boolean add(PuzzleWord newWord) {
+        if (bagSize < wordBag.length) {// checks if there is space in 'wordBag'
+            wordBag[bagSize] = newWord; // add new word at the end
+            bagSize++;// increment bagSize
+            return true;// true if newWord added
+        }
+        return false;// if there is no space in the bag
+    }
 
     //Returns # of PuzzleWords in bag.
     @Override
@@ -87,7 +101,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
     @Override
     public boolean contains(PuzzleWord anEntry) {
         for(int i=0; i<bagSize; i++){
-            if(wordBag[i].equals(anEntry)){// Null check needed for NullPointerException?
+            if(wordBag[i] != null && wordBag[i].equals(anEntry)){// Null check needed for NullPointerException?
                 return true;
             }// end if
         }// end for
