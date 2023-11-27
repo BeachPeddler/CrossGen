@@ -108,11 +108,12 @@ public class UserBag implements BagInterface<PuzzleWord> {
         return false;
     }// end contains
 
-    //Creates new array sized to only fit current content of bag.
+    //Creates new array sized to only fit current content of bag. Ranks contents of array and sorts.
     @Override
     public PuzzleWord[] toArray() {
         PuzzleWord[] resultArray= new PuzzleWord[bagSize];
         this.shiftContents();
+        this.orderContents();
         System.arraycopy(wordBag, 0, resultArray, 0, bagSize);
         return resultArray;
     }// end toArray
@@ -131,14 +132,14 @@ public class UserBag implements BagInterface<PuzzleWord> {
         }
     }
 
-
+    //Orders bag from lowest score to highest score.
     public void orderContents() {
         this.countLetterFrequencies();
         this.calculateWordScores();
         PuzzleWord temp;
         for (int i = 0; i < (wordBag.length - 1); i++) {
             for (int j = 1; j < wordBag.length; j++) {
-                if (wordBag[i].getWordScore() < wordBag[j].getWordScore()) {
+                if (wordBag[i].getWordScore() > wordBag[j].getWordScore()) {
                     temp = wordBag[i];
                     wordBag[i] = wordBag[j];
                     wordBag[j] = temp;
