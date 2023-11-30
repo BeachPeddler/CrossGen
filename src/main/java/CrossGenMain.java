@@ -3,7 +3,8 @@ import java.util.Scanner;
 //Receives input from users. Follows Factory Pattern method.
 public class CrossGenMain {
     static int wordCount = 0;
-    static final int MAX_WORD_COUNT = 10;
+    private static final int MAX_WORD_COUNT = 10;
+    private static final int MAX_LETTER_COUNT = 12;
 
 
     public static void main(String[] args) {
@@ -43,7 +44,7 @@ public class CrossGenMain {
             System.out.println("Enter your " + xth + " word.");
             newWord = input.nextLine();
             while (!validateWord(newWord)){
-                System.out.println("Enter a valid word. Only letters are allowed.");
+                System.out.println("Enter a valid word. Only " + MAX_LETTER_COUNT + " letters are allowed.");
                 newWord = input.nextLine();
                 validateWord(newWord);
             }
@@ -83,12 +84,18 @@ public class CrossGenMain {
 
     public static boolean validateWord(String newWord) {
         char[] chars = newWord.toCharArray();
-            for (char c : chars) {
-                if(!Character.isLetter(c)) {
-                    return false;
-                }
-            }
-            return true;
-    }
 
+        if ((newWord.length() > MAX_LETTER_COUNT) || (newWord.isEmpty()))
+        {
+            return false;
+        }
+        for (char c : chars)
+        {
+            if (!Character.isLetter(c))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }
