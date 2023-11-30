@@ -32,7 +32,7 @@ public class CrossGenFactory {
                 return crossword;
     }
 
-    //Creates number of crossword puzzles equal to maximum word count and returns one with highest score.
+    //Creates number of crossword puzzles equal to maximum word count and returns one with the highest score.
     //Finished, needs testing
     public char[][] generateManyPuzzles(UserBag wordsBag) { //input: words, maxWords
         double maxScore = 0;
@@ -77,7 +77,74 @@ public class CrossGenFactory {
 
     //This takes a 2D char array and crops it down by removing rows/columns which contain no characters.
     public char[][] cropGrid (char[][] crossword){
-        return crossword;
+        boolean emptyRow = true;
+        boolean emptyColumn = true;
+        int xMax = crossword.length;
+        int xMin = 0;
+        int xBarrier = 0;
+        int yMax = crossword[0].length;
+        int yMin = 0;
+        int yBarrier = 0;
+
+        for (int i = 0; i < crossword[0].length; i++){
+            for (int j = 0; j < crossword.length; j++){
+                if (crossword[i][j] != empty){
+                    emptyRow = false;
+                }
+            }
+            if (emptyRow){
+                yMin++;
+            }
+            emptyRow = true;
+        }
+
+        for (int i = 0; i < crossword[0].length; i++){
+            for (int j = 0; j < crossword.length; j++){
+                if (crossword[i][j] != empty){
+                    yBarrier = i;
+                    break;
+                }
+            }
+            if (yBarrier != 0){
+                break;
+            }
+        }
+
+        for (int i = 0; i < crossword.length; i++){
+            for (int j = 0; j < crossword[0].length; j++){
+                if (crossword[i][j] != empty){
+                    emptyColumn = false;
+                }
+            }
+            if (emptyColumn){
+                xMin++;
+            }
+            emptyColumn = true;
+        }
+
+        for (int i = 0; i < crossword.length; i++){
+            for (int j = 0; j < crossword[0].length; j++){
+                if (crossword[i][j] != empty){
+                    xBarrier = i;
+                    break;
+                }
+            }
+            if (xBarrier != 0){
+                break;
+            }
+        }
+
+        char[][] clipCross = new char[yMax - yMin][xMax - xMin];
+
+        for (int k = 0; k < clipCross.length; k++){
+            for (int l = 0; l < clipCross[0].length; l++){
+                int x = l + xBarrier;
+                int y = k + yBarrier;
+                clipCross[l][k] = crossword[x][y];
+            }
+        }
+
+        return clipCross;
     }
 
     //Gives crossword a score based on width:height ratio, # of squares which are filled, and # of squares left blank.
