@@ -3,11 +3,14 @@ public class CrossGenFactory {
     static char empty = '\u0000';
 
     //Generates a crossword puzzle through iterative placement.
+    //Mostly done, will require testing.
     public char[][] generate(UserBag wordsBag) {
         PuzzleWord[] wordArray = wordsBag.toArray();
         boolean placementOK;
+        int loopCount = 0;
+        //This begins the crossword puzzle with a word in the upper-left-hand
         char[][] crossword = placeWord(wordArray[0].getWordString(), new char[GRID_DEFAULT][GRID_DEFAULT], 0, 0, 0);
-        while (!wordsBag.isEmpty()) {
+        while (!wordsBag.isEmpty() || (loopCount < 10) ) {
             for (int i = 1; i < wordArray.length; i++) {
                 if (wordArray[i] != null) {
                     String word = wordArray[i].getWordString();
@@ -17,7 +20,7 @@ public class CrossGenFactory {
                         for (int y = 0; y < crossword.length; y++) {
                             for (int x = 0; x < crossword[0].length; x++) {
                                 if (crossword[y][x] == currChar) {
-                                    placementOK = canPlace(word, crossword, x, y);
+                                    placementOK = canPlace(word, crossword, x, y, j);
                                     if (placementOK) {
                                         crossword = placeWord(word, crossword, x, y, j);
                                         wordsBag.remove(wordArray[i]);
@@ -28,6 +31,7 @@ public class CrossGenFactory {
                     }
                 }
             }
+            loopCount++;
         }
                 return crossword;
     }
@@ -48,14 +52,14 @@ public class CrossGenFactory {
         return bestPuzzle;
     }
 
+    //This would try multiple attempts at word placement for best score when creating crossword.
     public char[][] placeWordsRepeatedly(UserBag wordsBag) {
-        return char[][];
+        return new char[0][0];
     }
 
     //Method places a single word onto existing 2D crossword array
     //Finished, needs testing
     public char[][] placeWord(String word, char[][] crossword, int x, int y, int junctionIndex) {
-        char junction = crossword[y][x];
         char[] wordArray = word.toCharArray();
         boolean downDirection = (crossword[y][x - 1] != empty) && (crossword[y][x + 1] != empty);
         if (downDirection) {
@@ -71,8 +75,29 @@ public class CrossGenFactory {
         return crossword;
     }
 
-    public boolean canPlace(String word, char[][] crossword, int x, int y) {
-        return false;
+    public boolean canPlace(String word, char[][] crossword, int x, int y, int junctionIndex) {
+        boolean downDirection = (crossword[y][x - 1] != empty) && (crossword[y][x + 1] != empty);
+        if (downDirection) {
+            if ((y-junctionIndex < 0) || (y+word.length()) > crossword[0].length) {
+                return false;
+            }
+            for (int i = 0; i < word.length(); i++) {
+                if ((crossword[y+i-junctionIndex][x+1] != empty) || ((crossword[y+i-junctionIndex][x-1]) != empty)){
+                    return false;
+                }
+            }
+        }
+        else {
+            if ((x-junctionIndex < 0) || (x+word.length()) > crossword.length) {
+                return false;
+            }
+            for (int i = 0; i < word.length(); i++) {
+                if ((crossword[y+1][x+i-junctionIndex] != empty) || ((crossword[y-1][x+i-junctionIndex]) != empty)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     //This takes a 2D char array and crops it down by removing rows/columns which contain no characters.
@@ -171,7 +196,7 @@ public class CrossGenFactory {
             }
         }
         fillRatio = (double) squaresFilled /squaresEmpty;
-        score = (lengthRatio * 10) + (fillRatio + 20);
+        score = (lengthRatio * 10) + (fillRatio * 20);
         return score;
     }
 }
