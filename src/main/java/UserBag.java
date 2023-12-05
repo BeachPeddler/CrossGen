@@ -48,7 +48,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
     @Override
     public boolean remove(PuzzleWord anEntry) {
         for (int i = 0; i < bagSize; i++) {
-            if (wordBag[i].equals(anEntry)) {
+            if (wordBag[i] != null) {
                 wordBag[i] = null;
                 bagSize--;
                 return true; // Word found and removed

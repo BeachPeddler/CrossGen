@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Scanner;
 
 //Receives input from users. Follows Factory Pattern method.
@@ -17,13 +18,14 @@ public class CrossGenMain {
         System.out.println("Welcome to our Crossword Generator!");
         System.out.println("Please set the word count for your crossword. (Maximum is 10)");
 
-        while (wordCount == 0)
+        while ((wordCount <= 0)||(wordCount >MAX_WORD_COUNT))
         {
             userInput = input.nextLine();
             while (!validateCount(userInput)) {
                 System.out.println("Enter a number 1-10.");
                 userInput = input.nextLine();
             }
+            wordCount = Integer.parseInt(userInput);
             if (wordCount <= MAX_WORD_COUNT && wordCount > 0)
             {
                 System.out.println("Your word count is " + wordCount + ".");
@@ -56,9 +58,15 @@ public class CrossGenMain {
         }
         System.out.println("Generating puzzle.");
 
-        //Constructs PuzzleWord() based on inputs
-        //Constructs WordList()
-        //Constructs a new CrossGenFactory
+        char[][] crossword = CrossGenFactory.generate(wordBag);
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Visualizer.createAndShowGUI(crossword);
+            }
+        });
     }
 
     private static String getString(int iterator) {

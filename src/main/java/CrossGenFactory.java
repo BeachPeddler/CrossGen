@@ -4,12 +4,12 @@ public class CrossGenFactory {
 
     //Generates a crossword puzzle through iterative placement.
     //Mostly done, will require testing.
-    public char[][] generate(UserBag wordsBag) {
+    public static char[][] generate(UserBag wordsBag) {
         PuzzleWord[] wordArray = wordsBag.toArray();
         boolean placementOK;
         int loopCount = 0;
         //This begins the crossword puzzle with a word in the upper-left-hand
-        char[][] crossword = placeWord(wordArray[0].getWordString(), new char[GRID_DEFAULT][GRID_DEFAULT], 0, 0, 0);
+        char[][] crossword = placeWord(wordArray[0].getWordString(), new char[GRID_DEFAULT][GRID_DEFAULT], (GRID_DEFAULT/2), (GRID_DEFAULT/2), 0);
         while (!wordsBag.isEmpty() || (loopCount < 10) ) {
             for (int i = 1; i < wordArray.length; i++) {
                 if (wordArray[i] != null) {
@@ -59,9 +59,18 @@ public class CrossGenFactory {
 
     //Method places a single word onto existing 2D crossword array
     //Finished, needs testing
-    public char[][] placeWord(String word, char[][] crossword, int x, int y, int junctionIndex) {
+    public static char[][] placeWord(String word, char[][] crossword, int x, int y, int junctionIndex) {
         char[] wordArray = word.toCharArray();
-        boolean downDirection = (crossword[y][x - 1] != empty) && (crossword[y][x + 1] != empty);
+        boolean downDirection = false;
+        if (x-1 < 0) {
+            downDirection = crossword[y][x + 1] != empty;
+        }
+        else if (x+1 > crossword[0].length) {
+            downDirection = crossword[y][x - 1] != empty;
+        }
+        else {
+            downDirection = (crossword[y][x - 1] != empty) && (crossword[y][x + 1] != empty);
+        }
         if (downDirection) {
             for (int i = 0; i < word.length(); i++) {
                 crossword[y+i-junctionIndex][x] = wordArray[i];
@@ -75,23 +84,48 @@ public class CrossGenFactory {
         return crossword;
     }
 
-    public boolean canPlace(String word, char[][] crossword, int x, int y, int junctionIndex) {
-        boolean downDirection = (crossword[y][x - 1] != empty) && (crossword[y][x + 1] != empty);
+    public static boolean canPlace(String word, char[][] crossword, int x, int y, int junctionIndex) {
+        boolean downDirection = false;
+        if ((x-1) < 0){
+            if ((crossword[y][x + 1] != empty)) {
+                downDirection = true;
+            }
+        }
+        else if ((x+1) > crossword[0].length) {
+            if ((crossword[y][x - 1] != empty)) {
+                downDirection = true;
+            }
+        }
+        else {
+            downDirection = (crossword[y][x - 1] != empty) && (crossword[y][x + 1] != empty);
+        }
         if (downDirection) {
-            if ((y-junctionIndex < 0) || (y+word.length()) > crossword[0].length) {
+            if (((y-junctionIndex) < 0) || ((y+word.length())) > crossword.length) {
                 return false;
             }
             for (int i = 0; i < word.length(); i++) {
-                if ((crossword[y+i-junctionIndex][x+1] != empty) || ((crossword[y+i-junctionIndex][x-1]) != empty)){
+                if (x+1 > crossword[0].length) {
+                    return (crossword[y+i-junctionIndex][x-1]) != empty;
+                }
+                else if ((x-1) < 0) {
+                    return (crossword[y+i-junctionIndex][x+1]) != empty;
+                }
+                else if ((crossword[y+i-junctionIndex][x+1] != empty) || ((crossword[y+i-junctionIndex][x-1]) != empty)){
                     return false;
                 }
             }
         }
         else {
-            if ((x-junctionIndex < 0) || (x+word.length()) > crossword.length) {
+            if ((x-junctionIndex < 0) || (x+word.length()) > crossword[0].length) {
                 return false;
             }
             for (int i = 0; i < word.length(); i++) {
+                if (y-1 < 0) {
+                    return crossword[y+1][x+i-junctionIndex] != empty;
+                }
+                else if (y+1 > crossword.length) {
+                    return crossword[y-1][x+i-junctionIndex] != empty;
+                }
                 if ((crossword[y+1][x+i-junctionIndex] != empty) || ((crossword[y-1][x+i-junctionIndex]) != empty)){
                     return false;
                 }
@@ -104,72 +138,50 @@ public class CrossGenFactory {
     public char[][] cropGrid (char[][] crossword){
         boolean emptyRow = true;
         boolean emptyColumn = true;
-        int xMax = crossword.length;
-        int xMin = 0;
-        int xBarrier = 0;
-        int yMax = crossword[0].length;
-        int yMin = 0;
-        int yBarrier = 0;
+        int rowsEmpty = 0;
+        int columnsEmpty = 0;
+        int lastRow = 0;
+        int lastColumn = 0;
 
-        for (int i = 0; i < crossword[0].length; i++){
-            for (int j = 0; j < crossword.length; j++){
-                if (crossword[i][j] != empty){
+
+        for (int y = 0; y < crossword.length; y++){
+            for (int x = 0; x < crossword[0].length; x++) {
+                if (crossword[y][x] != empty) {
+                    lastRow = y;
                     emptyRow = false;
+                    break;
                 }
             }
-            if (emptyRow){
-                yMin++;
+            if (emptyRow) {
+                rowsEmpty++;
             }
             emptyRow = true;
         }
 
-        for (int i = 0; i < crossword[0].length; i++){
-            for (int j = 0; j < crossword.length; j++){
-                if (crossword[i][j] != empty){
-                    yBarrier = i;
+        for (int x = 0; x < crossword[0].length; x++){
+            for (int y = 0; y < crossword.length; y++) {
+                if (crossword[y][x] != empty) {
+                    lastColumn = x;
+                    emptyColumn = false;
                     break;
                 }
             }
-            if (yBarrier != 0){
-                break;
-            }
-        }
-
-        for (int i = 0; i < crossword.length; i++){
-            for (int j = 0; j < crossword[0].length; j++){
-                if (crossword[i][j] != empty){
-                    emptyColumn = false;
-                }
-            }
-            if (emptyColumn){
-                xMin++;
+            if (emptyColumn) {
+                columnsEmpty++;
             }
             emptyColumn = true;
         }
 
-        for (int i = 0; i < crossword.length; i++){
-            for (int j = 0; j < crossword[0].length; j++){
-                if (crossword[i][j] != empty){
-                    xBarrier = i;
-                    break;
-                }
-            }
-            if (xBarrier != 0){
-                break;
+        //New array formed with
+        char[][] croppedPuzzle = new char[(crossword.length)-rowsEmpty][crossword[0].length - columnsEmpty];
+        for (int y = (croppedPuzzle.length - 1); y >= 0; y--){
+            for (int x = (croppedPuzzle[0].length - 1); x >= 0; x--){
+                int oldX = lastColumn + (x - (croppedPuzzle[0].length - 1));
+                int oldY = lastRow + (y - (croppedPuzzle.length - 1));
+                croppedPuzzle[y][x] = crossword[oldY][oldX];
             }
         }
-
-        char[][] clipCross = new char[yMax - yMin][xMax - xMin];
-
-        for (int k = 0; k < clipCross.length; k++){
-            for (int l = 0; l < clipCross[0].length; l++){
-                int x = l + xBarrier;
-                int y = k + yBarrier;
-                clipCross[l][k] = crossword[x][y];
-            }
-        }
-
-        return clipCross;
+        return croppedPuzzle;
     }
 
     //Gives crossword a score based on width:height ratio, # of squares which are filled, and # of squares left blank.
@@ -185,9 +197,9 @@ public class CrossGenFactory {
         if (crossword.length > crossword[0].length) { //Ratio should be <1.
             lengthRatio = ((double) crossword[0].length / crossword.length);
         }
-        for (int i = 0; i < (crossword.length); i++) {
-            for (int j = 0; j < crossword[0].length; j++) {
-                if (crossword[i][j] == '\u0000') { //should be default char in array
+        for (int y = 0; y < (crossword.length); y++) {
+            for (int x = 0; x < crossword[0].length; x++) {
+                if (crossword[y][x] == '\u0000') { //should be default char in array
                     squaresEmpty++;
                 }
                 else {
