@@ -6,10 +6,13 @@ public class CrossGenMain {
     static int wordCount = 0;
     static final int MAX_WORD_COUNT = 10;
     static final int MAX_LETTER_COUNT = 12;
+    static char[][] crossword;
 
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
+
+
 
         String userInput;
         String newWord;
@@ -58,7 +61,7 @@ public class CrossGenMain {
         }
         System.out.println("Generating puzzle.");
 
-        char[][] crossword = CrossGenFactory.generate(wordBag);
+        crossword = CrossGenFactory.generate(wordBag);
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
