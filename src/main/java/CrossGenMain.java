@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 //Receives input from users. Follows Factory Pattern method.
@@ -12,11 +13,18 @@ public class CrossGenMain {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
-
-
         String userInput;
         String newWord;
         String wordHint;
+
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Visualizer.createAndShowGUI();
+            }
+        });
 
         System.out.println("Welcome to our Crossword Generator!");
         System.out.println("Please set the word count for your crossword. (Maximum is 10)");
@@ -59,17 +67,10 @@ public class CrossGenMain {
             PuzzleWord addWord = new PuzzleWord(newWord.toUpperCase(), wordHint);
             wordBag.add(addWord);
         }
-        System.out.println("Generating puzzle.");
 
-        crossword = CrossGenFactory.generate(wordBag);
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Visualizer.createAndShowGUI(crossword);
-            }
-        });
+
+        System.out.println("Generating puzzle.");
+        CrossGenFactory.generateManyPuzzles(wordBag);
     }
 
     private static String getString(int iterator) {
@@ -108,5 +109,14 @@ public class CrossGenMain {
             }
         }
         return true;
+    }
+
+    public static void toConsole(char[][] crossword) {
+        for (int y = 0; y < crossword.length; y++) {
+            for (int x = 0; x <crossword[0].length; x++) {
+                System.out.print(crossword[y][x]+"\t");
+            }
+            System.out.println();
+        }
     }
 }

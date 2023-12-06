@@ -1,4 +1,4 @@
-
+import java.util.Arrays;
 
 public class UserBag implements BagInterface<PuzzleWord> {
     public static int bagSize = 0;// Array size
@@ -7,32 +7,21 @@ public class UserBag implements BagInterface<PuzzleWord> {
 
 
     public UserBag(int bagCapacity){// Base Constructor
-       wordBag = new PuzzleWord[bagCapacity];
+        wordBag = new PuzzleWord[bagCapacity];
     }
-
-    //Adds PuzzleWord object to bag
-   // @Override
-   // public boolean add(PuzzleWord newWord){
-     //   for (int i = 0; i < bagSize; i++) {//iterate through array
-        //    if (wordBag[i] == null) {//if null
-           //     System.out.println("Adding " + newWord + " at index " + i);
-            //    wordBag[i] = newWord;//add new word
-            //    bagSize++;
-            //    return true;
-          //  } //end if
-       // } //end for
-    //    return false;
-  //  } //end add
-
     //updated the add method, i was getting errors while testing and had to change it
 
     //Adds PuzzleWord object to bag
     @Override
     public boolean add(PuzzleWord newWord) {
         if (bagSize < wordBag.length) {// checks if there is space in 'wordBag'
-            wordBag[bagSize] = newWord; // add new word at the end
-            bagSize++;// increment bagSize
-            return true;// true if newWord added
+            for (int i = 0; i < wordBag.length; i++) {
+                if (wordBag[i] == null) {
+                    wordBag[i] = newWord; // add new word
+                    bagSize++;// increment bagSize
+                    return true;
+                }
+            }
         }
         return false;// if there is no space in the bag
     }
@@ -47,8 +36,8 @@ public class UserBag implements BagInterface<PuzzleWord> {
     //Removes a specific PuzzleWord object from bag
     @Override
     public boolean remove(PuzzleWord anEntry) {
-        for (int i = 0; i < bagSize; i++) {
-            if (wordBag[i] != null) {
+        for (int i = 0; i < wordBag.length; i++) {
+            if (wordBag[i] == anEntry) {
                 wordBag[i] = null;
                 bagSize--;
                 return true; // Word found and removed
@@ -61,26 +50,25 @@ public class UserBag implements BagInterface<PuzzleWord> {
     //Sets all array elements of bag to null
     @Override
     public void clear() {
-        for (int i = 0; i < bagSize; i++) {
-            wordBag[i] = null;
-        } //end for
+        //end for
+        Arrays.fill(wordBag, null);
         bagSize = 0;
     } //end clear
 
     //isEmpty
     @Override
     public boolean isEmpty(){
-        return bagSize==0;//Returns True if getCurrentSize=0
+        return (bagSize == 0);//Returns True if getCurrentSize=0
     }// end isEmpty
 
     @Override
     public PuzzleWord remove() {
         PuzzleWord removedWord;
-        for (int i = 0; i < bagSize; i++) {
-            removedWord = wordBag[i];
-            if (removedWord != null) {
-                bagSize--;
+        for (int i = 0; i < wordBag.length; i++) {
+            if (wordBag[i] != null) {
+                removedWord = wordBag[i];
                 wordBag[i] = null;
+                bagSize--;
                 return removedWord;
             }
         }
@@ -90,7 +78,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
     public int getFrequencyOf(PuzzleWord anEntry) {
         int freq= 0;// initialize freq to 0
         for(int i=0; i < bagSize; i++){
-            if(wordBag[i].equals(anEntry)){
+            if(wordBag[i] == anEntry){
                 freq++;
             }// end if
         }//end for
@@ -101,7 +89,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
     @Override
     public boolean contains(PuzzleWord anEntry) {
         for(int i=0; i<bagSize; i++){
-            if(wordBag[i] != null && wordBag[i].equals(anEntry)){// Null check needed for NullPointerException?
+            if((wordBag[i] == anEntry)){// Null check needed for NullPointerException?
                 return true;
             }// end if
         }// end for
@@ -112,17 +100,35 @@ public class UserBag implements BagInterface<PuzzleWord> {
     @Override
     public PuzzleWord[] toArray() {
         PuzzleWord[] resultArray= new PuzzleWord[bagSize];
+        int arrayIndex = 0;
         this.shiftContents();
         this.orderContents();
-        System.arraycopy(wordBag, 0, resultArray, 0, bagSize);
+        for (int i = 0; i < wordBag.length; i++) {
+            if (wordBag[i] != null) {
+                resultArray[arrayIndex] = wordBag[i];
+                arrayIndex++;
+            }
+        }
+        return resultArray;
+    }// end toArray
+
+    public String[] toWordArray() {
+        String[] resultArray= new String[bagSize];
+        int arrayIndex = 0;
+        for (int i = 0; i < wordBag.length; i++) {
+            if (wordBag[i] != null) {
+                resultArray[arrayIndex] = wordBag[i].getWordString();
+                arrayIndex++;
+            }
+        }
         return resultArray;
     }// end toArray
 
     //Shifts all objects in wordBag so that all entries are towards front of array.
     public void shiftContents() {
-        for (int i = 0; i < CrossGenMain.wordCount; i++) {
+        for (int i = 0; i < (wordBag.length - 1); i++) {
             if (wordBag[i] == null) {
-                for (int j = 1; j < CrossGenMain.wordCount; j++) {
+                for (int j = (i+1); j < wordBag.length; j++) {
                     if (wordBag[j] != null) {
                         wordBag[i] = wordBag[j];
                         wordBag[j] = null;
@@ -138,7 +144,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
         this.calculateWordScores();
         PuzzleWord temp;
         for (int i = 0; i < (wordBag.length - 1); i++) {
-            for (int j = 1; j < wordBag.length; j++) {
+            for (int j = (i+1); j < wordBag.length; j++) {
                 if (wordBag[i].getWordScore() > wordBag[j].getWordScore()) {
                     temp = wordBag[i];
                     wordBag[i] = wordBag[j];
@@ -149,7 +155,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
     }
     public void countLetterFrequencies() {
 
-        for (int i = 0; i < bagSize; i++) {
+        for (int i = 0; i < wordBag.length; i++) {
             PuzzleWord puzzleWord = wordBag[i];// iterate through each element
             if (puzzleWord !=null) { //check if PuzzleWord is not null
                 String word= puzzleWord.getWordString();// get word from PuzzleWord
@@ -165,7 +171,7 @@ public class UserBag implements BagInterface<PuzzleWord> {
 
 
     public void calculateWordScores() {
-        for (int i = 0; i < bagSize; i++) {
+        for (int i = 0; i < wordBag.length; i++) {
             PuzzleWord puzzleWord = wordBag[i];// iterate through each element
             if (puzzleWord != null) {//null check
                 String word = puzzleWord.getWordString();//get word from puzzle word
