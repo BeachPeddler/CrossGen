@@ -3,21 +3,20 @@ import java.awt.*;
 
 public class CrosswordPanel extends JPanel {
 
-    public void setCrossword(char[][] array) {
+    public void setCrossword(CrosswordPuzzle crossword) {
         removeAll();
-        int h = array.length;
-        int w = array[0].length;
-        setLayout(new GridLayout(h, w));
-        JTextField[][] textFields = new JTextField[h][w];
+        setLayout(new GridLayout(crossword.height, crossword.width));
+        JTextField[][] textFields = new JTextField[crossword.height][crossword.width];
 
-        for (int y = 0; y < h; y++) {
-            for (int x = 0; x < w; x++) {
-                char c = array[y][x];
+        for (int y = 0; y < crossword.height; y++) {
+            for (int x = 0; x < crossword.width; x++) {
+                char c = crossword.getValueOf(x, y);
                 if (c != '\u0000') {
                     textFields[y][x] = new JTextField(String.valueOf(c));
                     textFields[y][x].setFont(textFields[y][x].getFont().deriveFont(20.0f));
                     add(textFields[y][x]);
-                } else {
+                }
+                else {
                     add(new JLabel());
                 }
             }

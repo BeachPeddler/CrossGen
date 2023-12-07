@@ -7,7 +7,6 @@ public class CrossGenMain {
     static int wordCount = 0;
     static final int MAX_WORD_COUNT = 10;
     static final int MAX_LETTER_COUNT = 12;
-    static char[][] crossword;
 
 
     public static void main(String[] args) {
@@ -25,6 +24,7 @@ public class CrossGenMain {
                 Visualizer.createAndShowGUI();
             }
         });
+
 
         System.out.println("Welcome to our Crossword Generator!");
         System.out.println("Please set the word count for your crossword. (Maximum is 10)");
@@ -46,7 +46,6 @@ public class CrossGenMain {
                 System.out.println("Enter a number 1-10.");
             }
         }
-
         UserBag wordBag = new UserBag(wordCount);
 
 
@@ -66,8 +65,7 @@ public class CrossGenMain {
 
             PuzzleWord addWord = new PuzzleWord(newWord.toUpperCase(), wordHint);
             wordBag.add(addWord);
-        }
-
+        } //All words added
 
         System.out.println("Generating puzzle.");
         CrossGenFactory.generateManyPuzzles(wordBag);
@@ -88,13 +86,13 @@ public class CrossGenMain {
         };
     }
 
-    public static boolean validateCount(String newNum) {
+    private static boolean validateCount(String newNum) {
         String clean = newNum.replaceAll("\\D+","");
         return clean.equals(newNum);
     }
 
-
-    public static boolean validateWord(String newWord) {
+    //Checks to see if entered word is proper length or over word size limit.
+    private static boolean validateWord(String newWord) {
         char[] chars = newWord.toCharArray();
 
         if ((newWord.length() > MAX_LETTER_COUNT) || (newWord.isEmpty()))
@@ -109,14 +107,5 @@ public class CrossGenMain {
             }
         }
         return true;
-    }
-
-    public static void toConsole(char[][] crossword) {
-        for (int y = 0; y < crossword.length; y++) {
-            for (int x = 0; x <crossword[0].length; x++) {
-                System.out.print(crossword[y][x]+"\t");
-            }
-            System.out.println();
-        }
     }
 }

@@ -1,9 +1,9 @@
 import java.util.Arrays;
 
 public class UserBag implements BagInterface<PuzzleWord> {
-    public static int bagSize = 0;// Array size
+    public int bagSize = 0;// Array size
     public final int[] letterFrequency = new int[26];//Alphabet size
-    public static PuzzleWord[] wordBag;
+    public PuzzleWord[] wordBag;
 
 
     public UserBag(int bagCapacity){// Base Constructor
@@ -61,6 +61,15 @@ public class UserBag implements BagInterface<PuzzleWord> {
         return (bagSize == 0);//Returns True if getCurrentSize=0
     }// end isEmpty
 
+    public boolean isFull(){
+        for (PuzzleWord puzzleWord : wordBag) {
+            if (puzzleWord == null) {
+                return false;
+            }
+        }
+       return true;
+    }// end isEmpty
+
     @Override
     public PuzzleWord remove() {
         PuzzleWord removedWord;
@@ -101,8 +110,8 @@ public class UserBag implements BagInterface<PuzzleWord> {
     public PuzzleWord[] toArray() {
         PuzzleWord[] resultArray= new PuzzleWord[bagSize];
         int arrayIndex = 0;
-        this.shiftContents();
-        this.orderContents();
+        shiftContents();
+        orderContents();
         for (int i = 0; i < wordBag.length; i++) {
             if (wordBag[i] != null) {
                 resultArray[arrayIndex] = wordBag[i];
@@ -187,4 +196,12 @@ public class UserBag implements BagInterface<PuzzleWord> {
             }//end if
         }//end for
     }//end print word score
+
+    public UserBag clone() {
+        UserBag cloneBag = new UserBag(wordBag.length);
+        for (int i = 0; i < wordBag.length; i++) {
+            cloneBag.add(wordBag[i].clone());
+        }
+        return cloneBag;
+    }
 }

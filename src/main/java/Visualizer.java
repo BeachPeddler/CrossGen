@@ -35,7 +35,7 @@ public class Visualizer
     }
 
     private static void generate(CrosswordPanel panel) {
-        char[][] crossword = CrossGenFactory.crosswordBest;
+        CrosswordPuzzle crossword = CrossGenFactory.crosswordBest;
         panel.setCrossword(crossword);
     }
 

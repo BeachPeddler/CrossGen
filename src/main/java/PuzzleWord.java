@@ -5,8 +5,11 @@ import java.util.Arrays;
 public class PuzzleWord {
     private String wordString;
     private String wordHint;
-    public int wordScore = 0;
-
+    private int wordScore = 0;
+    private boolean downDirection; //Whether the word goes down (rather than across) in puzzle.
+    private int yPosition;
+    private int xPosition;
+    private int wordNumber; //1-Across, 5-Down, etc.
 
     public PuzzleWord(String word, String hint) {
         this.wordString = word;
@@ -35,11 +38,28 @@ public class PuzzleWord {
     }
 
     public char[] toArray() {
-        char[] wordArray = new char[wordString.length()];
-        for (int i = 0; i<wordString.length(); i++) {
-            wordArray[i] = wordString.charAt(i);
-        }
-        return wordArray;
+        return wordString.toCharArray();
+    }
+
+    public PuzzleWord clone() {
+        PuzzleWord clonedWord = new PuzzleWord(this.getWordString(), this.getWordHint());
+        clonedWord.setWordScore(this.wordScore);
+        clonedWord.downDirection = this.downDirection;
+        clonedWord.setPosition(this.xPosition, this.yPosition);
+        clonedWord.wordNumber = this.wordNumber;
+        return clonedWord;
+    }
+
+    public void setDirection(boolean goesDown) {
+        this.downDirection = goesDown;
+    }
+
+    public void setPosition(int x, int y) {
+        this.xPosition = x;
+        this.yPosition = y;
+    }
+    public boolean goesDown() {
+        return downDirection;
     }
 }
 
