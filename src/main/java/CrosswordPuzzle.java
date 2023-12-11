@@ -201,4 +201,63 @@ public class CrosswordPuzzle {
     public char getValueOf(int x, int y) {
         return crossword[y][x];
     }
+
+    public void setWordOrder() {
+        PuzzleWord[] orderedArray = this.wordsAdded.toArray();
+
+
+        //Assign Values for String output, increasing top to bottom, then left to right.
+        PuzzleWord temp;
+        PuzzleWord nextHighestWord;
+        for (int i = 0; i < wordsAdded.bagSize; i++) {
+            nextHighestWord = orderedArray[i];
+            for (int j = i+1; j < wordsAdded.bagSize; j++) {
+                if (orderedArray[j].getY() < nextHighestWord.getY()) {
+                    temp = nextHighestWord;
+                    nextHighestWord = orderedArray[j];
+                    orderedArray[j] = temp;
+                }
+                else if (orderedArray[j].getY() == nextHighestWord.getY()) {
+                   if (orderedArray[j].getX() < nextHighestWord.getX()) {
+                       temp = nextHighestWord;
+                       nextHighestWord = orderedArray[j];
+                       orderedArray[j] = temp;
+                    }
+                }
+                orderedArray[i] = nextHighestWord;
+            }
+        }
+        for (int i = 0; i < orderedArray.length; i++) {
+            System.out.println(orderedArray[i].getWordString() + ": " + orderedArray[i].getWordNumber() + "  X:" + orderedArray[i].getX() + " Y:" + orderedArray[i].getY());
+        }
+        //Update all x/y coordinates of PuzzleWords in crossword.
+        int shiftUp;
+        int shiftLeft;
+        int indexOfX = 0;
+        for (int i = 0; i< this.crossword[0].length; i++) {
+            if (this.crossword[0][i] != empty) {
+                indexOfX = i;
+                break;
+            }
+        }
+        shiftLeft = (orderedArray[0].getX() - indexOfX);
+        shiftUp = orderedArray[0].getY();
+        for (int i = 0; i < wordsAdded.bagSize; i++) {
+            orderedArray[i].setPosition((orderedArray[i].getX()-shiftLeft),(orderedArray[i].getY() - shiftUp));
+        }
+
+        //Adds indices to each PuzzleWord, accounting for those which share a start point.
+        int wordIndex = 1;
+        for (int i = 0; i < wordsAdded.bagSize; i++) {
+            orderedArray[i].setWordNumber(wordIndex);
+            if (i < wordsAdded.bagSize - 1) {
+                if ((orderedArray[i + 1].getY() == orderedArray[i].getY()) && (orderedArray[i + 1].getX() == orderedArray[i].getX())) {
+                    orderedArray[i+1].setWordNumber(wordIndex);
+                    i++;
+                }
+            }
+            System.out.println(orderedArray[i].getWordString() + ": " + orderedArray[i].getWordNumber());
+            wordIndex++;
+        }
+    }
 }

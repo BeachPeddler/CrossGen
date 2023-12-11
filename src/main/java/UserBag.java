@@ -111,7 +111,6 @@ public class UserBag implements BagInterface<PuzzleWord> {
         PuzzleWord[] resultArray= new PuzzleWord[bagSize];
         int arrayIndex = 0;
         shiftContents();
-        orderContents();
         for (int i = 0; i < wordBag.length; i++) {
             if (wordBag[i] != null) {
                 resultArray[arrayIndex] = wordBag[i];
@@ -121,17 +120,6 @@ public class UserBag implements BagInterface<PuzzleWord> {
         return resultArray;
     }// end toArray
 
-    public String[] toWordArray() {
-        String[] resultArray= new String[bagSize];
-        int arrayIndex = 0;
-        for (int i = 0; i < wordBag.length; i++) {
-            if (wordBag[i] != null) {
-                resultArray[arrayIndex] = wordBag[i].getWordString();
-                arrayIndex++;
-            }
-        }
-        return resultArray;
-    }// end toArray
 
     //Shifts all objects in wordBag so that all entries are towards front of array.
     public void shiftContents() {
@@ -146,56 +134,6 @@ public class UserBag implements BagInterface<PuzzleWord> {
             }
         }
     }
-
-    //Orders bag from lowest score to highest score.
-    public void orderContents() {
-        this.countLetterFrequencies();
-        this.calculateWordScores();
-        PuzzleWord temp;
-        for (int i = 0; i < (wordBag.length - 1); i++) {
-            for (int j = (i+1); j < wordBag.length; j++) {
-                if (wordBag[i].getWordScore() > wordBag[j].getWordScore()) {
-                    temp = wordBag[i];
-                    wordBag[i] = wordBag[j];
-                    wordBag[j] = temp;
-                }
-            }
-        }
-    }
-    public void countLetterFrequencies() {
-
-        for (int i = 0; i < wordBag.length; i++) {
-            PuzzleWord puzzleWord = wordBag[i];// iterate through each element
-            if (puzzleWord !=null) { //check if PuzzleWord is not null
-                String word= puzzleWord.getWordString();// get word from PuzzleWord
-                for (int j = 0; j < word.length(); j++) {//iterate through the word
-                    char c = Character.toLowerCase(word.charAt(j));
-                    if (c >= 'a' && c <= 'z') {//checks char
-                        letterFrequency[c - 'a']++; //update frequency counter
-                    }//end if
-                }// end for
-            }//end if
-        }//end for
-    }// end countLetterFrequency
-
-
-    public void calculateWordScores() {
-        for (int i = 0; i < wordBag.length; i++) {
-            PuzzleWord puzzleWord = wordBag[i];// iterate through each element
-            if (puzzleWord != null) {//null check
-                String word = puzzleWord.getWordString();//get word from puzzle word
-                int score = 0;// initialize score at 0
-
-                for (int j = 0; j < word.length(); j++) {//iterate through word
-                    char c = Character.toLowerCase(word.charAt(j));
-                    if (c >= 'a' && c <= 'z') {//check char
-                        score += letterFrequency[c - 'a'];// update score from letter frequency array
-                    }//end if
-                }//end for
-                puzzleWord.setWordScore(score);
-            }//end if
-        }//end for
-    }//end print word score
 
     public UserBag clone() {
         UserBag cloneBag = new UserBag(wordBag.length);

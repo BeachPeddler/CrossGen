@@ -21,7 +21,7 @@ public class CrossGenMain {
             @Override
             public void run()
             {
-                Visualizer.createAndShowGUI();
+                Visualizer.runPopUp();
             }
         });
 
@@ -69,6 +69,8 @@ public class CrossGenMain {
 
         System.out.println("Generating puzzle.");
         CrossGenFactory.generateManyPuzzles(wordBag);
+        CrossGenFactory.crosswordBest.setWordOrder();
+        System.out.println("Generation Finished.");
     }
 
     private static String getString(int iterator) {

@@ -6,37 +6,63 @@ import java.awt.event.ActionListener;
 public class Visualizer
 {
 
-    public static void createAndShowGUI()
+    public static void runPopUp()
     {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame popUpWindow = new JFrame();
+        popUpWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        f.getContentPane().setLayout(new BorderLayout());
+        popUpWindow.getContentPane().setLayout(new BorderLayout());
 
-        JPanel container = new JPanel(new FlowLayout());
-        final CrosswordPanel panel = new CrosswordPanel();
-        container.add(panel);
-        f.getContentPane().add(container, BorderLayout.CENTER);
+        JPanel centerContainer = new JPanel(new GridLayout(1,2));
+        final Panel crosswordPanel = new Panel();
+        final Panel tablePanel = new Panel();
+        centerContainer.add(crosswordPanel);
+        centerContainer.add(tablePanel);
+        popUpWindow.getContentPane().add(centerContainer, BorderLayout.CENTER);
 
-        JButton generateButton = new JButton("Generate");
-        generateButton.addActionListener(new ActionListener()
+        JPanel buttonContainer = new JPanel(new GridLayout(1, 2));
+        JButton populateFields = new JButton("Populate");
+        populateFields.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                generate(panel);
+                generateCrosswordPanel(crosswordPanel);
+                generateTablePanel(tablePanel);
             }
         });
-        f.getContentPane().add(generateButton, BorderLayout.SOUTH);
+        buttonContainer.add(populateFields);
 
-        f.setSize(800, 800);
-        f.setLocationRelativeTo(null);
-        f.setVisible(true);
+        JButton clearPuzzle = new JButton("Clear");
+        clearPuzzle.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                clearPuzzlePanel(crosswordPanel);
+            }
+        });
+        buttonContainer.add(clearPuzzle);
+
+        popUpWindow.getContentPane().add(buttonContainer, BorderLayout.SOUTH);
+
+        popUpWindow.setSize(800, 800);
+        popUpWindow.setLocationRelativeTo(null);
+        popUpWindow.setVisible(true);
     }
 
-    private static void generate(CrosswordPanel panel) {
+    private static void generateCrosswordPanel(Panel crosswordPanel) {
         CrosswordPuzzle crossword = CrossGenFactory.crosswordBest;
-        panel.setCrossword(crossword);
+        crosswordPanel.setCrossword(crossword);
+    }
+    private static void generateTablePanel(Panel tablePanel) {
+        CrosswordPuzzle crossword = CrossGenFactory.crosswordBest;
+        tablePanel.setTable(crossword);
+    }
+    private static void clearPuzzlePanel(Panel crosswordPanel) {
+        CrossGenFactory.crosswordBest.setWordOrder();
+        CrosswordPuzzle crossword = CrossGenFactory.crosswordBest;
+        crosswordPanel.clearPuzzle(crossword);
     }
 
 }
