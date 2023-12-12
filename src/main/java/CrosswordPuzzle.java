@@ -86,6 +86,9 @@ public class CrosswordPuzzle {
                 else if (((y+i)-junctionIndex) == y) {
                     continue;
                 }
+                else if (((crossword[y+i-junctionIndex][x]) != empty) && (crossword[y+i-junctionIndex][x] != checkWord.getWordString().charAt(i))){
+                    return false;
+                }
                 else if ((crossword[y+i-junctionIndex][x+1] != empty) || ((crossword[y+i-junctionIndex][x-1]) != empty) || ((crossword[y+i-junctionIndex][x]) != empty)){
                     return false;
                 }

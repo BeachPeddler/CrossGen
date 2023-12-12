@@ -8,15 +8,18 @@ public class CrossGenFactory {
     //Generates a crossword puzzle through iterative placement.
     //Mostly done, will require testing.
 
-    public static CrosswordPuzzle generate(UserBag wordBag, int firstWord) {
+    public CrosswordPuzzle generate(PuzzleWord[] thisArray, UserBag wordBag) {
         boolean exitLoop = false;
         int loopCount = 0;
-        PuzzleWord[] tempWordArray = wordBag.clone().toArray(); //Creates a temporary array containing clones of each PuzzleWord.
+        PuzzleWord[] tempWordArray = new PuzzleWord[thisArray.length];
+        for (int i = 0; i < thisArray.length; i++) {
+            tempWordArray[i] = thisArray[i].clone();
+        }//Creates a temporary array containing clones of each PuzzleWord.
         CrosswordPuzzle crossword = new CrosswordPuzzle(wordBag, GRID_DEFAULT, GRID_DEFAULT);  //This begins the crossword puzzle with a word in the middle.
-        crossword.placeWord(tempWordArray[firstWord], (GRID_DEFAULT/2), (GRID_DEFAULT/2), 0);
-        tempWordArray[firstWord] = null;
+        crossword.placeWord(tempWordArray[0], (GRID_DEFAULT/2), (GRID_DEFAULT/2), 0);
+        tempWordArray[0] = null;
         while (!exitLoop) {
-            for (int i = 0; i < tempWordArray.length; i++) {
+            for (int i = 1; i < tempWordArray.length; i++) {
                 wordLoop:
                 if (tempWordArray[i] != null) {
                     String word = tempWordArray[i].getWordString();
@@ -46,12 +49,18 @@ public class CrossGenFactory {
 
     //Creates number of crossword puzzles equal to maximum word count and returns one with the highest score.
     //Finished, needs testing
-    public static void generateManyPuzzles(UserBag wordsBag) { //input: words, maxWords
+    public void generateManyPuzzles(UserBag wordsBag) { //input: words, maxWords
+        wordsBag.populateRecursive(wordsBag.bagSize, wordsBag.toArray());
         double maxScore = 0;
         CrosswordPuzzle bestPuzzle = null;
         CrosswordPuzzle crossword;
-            for (int i = 0; i < wordsBag.getCurrentSize(); i++) {
-                crossword = generate(wordsBag, i);
+            for (int i = 0; i < wordsBag.allPermutations.length; i++) {
+                PuzzleWord[] passedArray = new PuzzleWord[wordsBag.bagSize];
+                for (int j = 0; j < wordsBag.bagSize; j++ ) {
+                    passedArray[j] = wordsBag.allPermutations[i][j].clone();
+                }
+                crossword = generate(passedArray, wordsBag);
+                System.out.println("Generated " + i);
                 crossword.cropGrid();
                 double score = crossword.generateScore();
                 if (score > maxScore) {

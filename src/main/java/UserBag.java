@@ -4,10 +4,13 @@ public class UserBag implements BagInterface<PuzzleWord> {
     public int bagSize = 0;// Array size
     public final int[] letterFrequency = new int[26];//Alphabet size
     public PuzzleWord[] wordBag;
+    public PuzzleWord[][] allPermutations;
+    private int permutationCount = 0;
 
 
     public UserBag(int bagCapacity){// Base Constructor
-        wordBag = new PuzzleWord[bagCapacity];
+        this.wordBag = new PuzzleWord[bagCapacity];
+        this.allPermutations = new PuzzleWord[factorial(bagCapacity)][bagCapacity];
     }
     //updated the add method, i was getting errors while testing and had to change it
 
@@ -110,7 +113,6 @@ public class UserBag implements BagInterface<PuzzleWord> {
     public PuzzleWord[] toArray() {
         PuzzleWord[] resultArray= new PuzzleWord[bagSize];
         int arrayIndex = 0;
-        shiftContents();
         for (int i = 0; i < wordBag.length; i++) {
             if (wordBag[i] != null) {
                 resultArray[arrayIndex] = wordBag[i];
@@ -120,21 +122,6 @@ public class UserBag implements BagInterface<PuzzleWord> {
         return resultArray;
     }// end toArray
 
-
-    //Shifts all objects in wordBag so that all entries are towards front of array.
-    public void shiftContents() {
-        for (int i = 0; i < (wordBag.length - 1); i++) {
-            if (wordBag[i] == null) {
-                for (int j = (i+1); j < wordBag.length; j++) {
-                    if (wordBag[j] != null) {
-                        wordBag[i] = wordBag[j];
-                        wordBag[j] = null;
-                    }
-                }
-            }
-        }
-    }
-
     public UserBag clone() {
         UserBag cloneBag = new UserBag(wordBag.length);
         for (int i = 0; i < wordBag.length; i++) {
@@ -142,4 +129,43 @@ public class UserBag implements BagInterface<PuzzleWord> {
         }
         return cloneBag;
     }
+
+    //Used to determine size of 2D PuzzleWord array, allPermutations.
+    public static int factorial(int n) {
+        int product = 1;
+        for (int i = 2; i <= n; i++) {
+            product = product * i;
+        }
+        return product;
+    }
+    private void swap(PuzzleWord[] wordArray, int a, int b) {
+        PuzzleWord temp = wordArray[a];
+        wordArray[a] = wordArray[b];
+        wordArray[b] = temp;
+    }
+    public void populateRecursive(int n, PuzzleWord[] wordArray) {
+        if(n == 1) {
+            storePermutation(wordArray);
+        }
+        else {
+            for(int i = 0; i < n-1; i++) {
+                populateRecursive(n - 1, wordArray);
+                if(n % 2 == 0) {
+                    swap(wordArray, i, n-1);
+                }
+                else {
+                    swap(wordArray, 0, n-1);
+                }
+            }
+            populateRecursive(n - 1, wordArray);
+        }
+    }
+    public void storePermutation(PuzzleWord[] currArray) {
+        for (int i = 0; i < currArray.length; i++) {
+            currArray[i] = currArray[i].clone();
+        }
+        allPermutations[permutationCount] = currArray;
+        permutationCount++;
+    }
+
 }

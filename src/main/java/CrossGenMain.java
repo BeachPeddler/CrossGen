@@ -66,11 +66,14 @@ public class CrossGenMain {
             PuzzleWord addWord = new PuzzleWord(newWord.toUpperCase(), wordHint);
             wordBag.add(addWord);
         } //All words added
-
+        CrossGenFactory generator = new CrossGenFactory();
         System.out.println("Generating puzzle.");
-        CrossGenFactory.generateManyPuzzles(wordBag);
+        generator.generateManyPuzzles(wordBag);
         CrossGenFactory.crosswordBest.setWordOrder();
         System.out.println("Generation Finished.");
+        if (CrossGenFactory.crosswordBest.generateScore() == 0) {
+            System.out.println("Puzzle cannot be generated with words provided.");
+        }
     }
 
     private static String getString(int iterator) {
